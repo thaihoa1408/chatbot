@@ -8,14 +8,21 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { useChatbotContext } from "@/context/ChatbotContext";
 
 interface AssistantChatMessageProps {
   message: ChatMessage;
+  messageIndex: number;
 }
 
 export default function AssistantChatMessage({
   message,
+  messageIndex,
 }: AssistantChatMessageProps) {
+  const {
+    state: { selectedConversation, messageIsStreaming },
+  } = useChatbotContext();
+
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -110,13 +117,13 @@ export default function AssistantChatMessage({
               },
             }}
           >
-            {/* {`${message.content}${
-            messageIsStreaming &&
-            messageIndex === selectedConversationLength - 1
-              ? '`▍`'
-              : ''
-          }`} */}
-            {message.content}
+            {`${message.content}${
+              messageIsStreaming &&
+              selectedConversation &&
+              messageIndex === selectedConversation?.messages.length - 1
+                ? "`▍`"
+                : ""
+            }`}
           </ReactMarkdown>
         </Typography.Text>
         {/* <MessageActions

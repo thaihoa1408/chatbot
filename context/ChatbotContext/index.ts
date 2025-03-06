@@ -19,6 +19,7 @@ export interface ChatbotContextProps {
   ) => void;
   handleSend: (message: ChatMessage, deleteCount?: number) => Promise<void>;
   stopConversationRef: React.RefObject<boolean>;
+  handleDeleteConversation: (conversation: Conversation) => void;
 }
 const ChatbotContext = createContext<ChatbotContextProps>(undefined!);
 
