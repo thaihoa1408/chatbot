@@ -67,6 +67,7 @@ export const updateConversation = (
 };
 
 export const saveConversation = (conversation: Conversation) => {
+  console.log(conversation);
   localStorage.setItem("selectedConversation", JSON.stringify(conversation));
 };
 

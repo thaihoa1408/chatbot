@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { Layout } from "antd";
+import React, { useState, useEffect } from "react";
+import { Button, Flex, Layout } from "antd";
 import Sidebar from "./Sidebar";
-import { MenuUnfoldOutlined } from "@ant-design/icons";
+import { EditOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import styles from "./Layout.module.css";
+import { useChatbotContext } from "@/context/ChatbotContext";
 const { Content, Header } = Layout;
 
 export default function ChatbotLayout({
@@ -9,7 +11,19 @@ export default function ChatbotLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { handleNewConversation } = useChatbotContext();
   const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    setCollapsed(window.innerWidth < 768);
+
+    const handleResize = () => {
+      setCollapsed(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleToggleSidebar = () => {
     setCollapsed(!collapsed);
@@ -29,13 +43,7 @@ export default function ChatbotLayout({
       <Sidebar
         collapsed={collapsed}
         onToggle={handleToggleSidebar}
-        className="md:relative absolute"
-        style={{
-          zIndex: 1000,
-          height: "100%",
-          transform: `translateX(${collapsed ? "-100%" : "0"})`,
-          transition: "transform 0.3s ease",
-        }}
+        className={styles.sidebar}
       />
       <Layout>
         <Header
@@ -48,7 +56,17 @@ export default function ChatbotLayout({
             alignItems: "center",
           }}
         >
-          {collapsed && <MenuUnfoldOutlined onClick={handleToggleSidebar} />}
+          {collapsed && (
+            <Flex align="center" justify="center" gap={8}>
+              <MenuUnfoldOutlined onClick={handleToggleSidebar} />
+              <Button
+                type="primary"
+                shape="circle"
+                icon={<EditOutlined style={{ fontSize: "16px" }} />}
+                onClick={() => handleNewConversation()}
+              />
+            </Flex>
+          )}
         </Header>
         <Content>{children}</Content>
       </Layout>

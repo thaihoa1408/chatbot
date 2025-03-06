@@ -2,6 +2,7 @@ import React from "react";
 import { Conversation } from "@/types";
 import { useChatbotContext } from "@context/ChatbotContext";
 import { Typography } from "antd";
+import ActionDropdown from "./ActionDropdown";
 interface ConversationItemProps {
   conversation: Conversation;
 }
@@ -12,6 +13,7 @@ export default function ConversationItem({
   const {
     state: { selectedConversation },
     handleSelectConversation,
+    handleDeleteConversation,
   } = useChatbotContext();
 
   const isSelected = selectedConversation?.uuid === conversation.uuid;
@@ -24,6 +26,7 @@ export default function ConversationItem({
         fontSize: "0.875rem",
         position: "relative",
         cursor: "pointer",
+        marginBottom: "0.2rem",
       }}
       onClick={() => handleSelectConversation(conversation)}
     >
@@ -62,16 +65,23 @@ export default function ConversationItem({
           gap: "0.375rem",
           paddingRight: "0.5rem",
           right: 0,
-          display: "none",
+          display:
+            selectedConversation?.uuid === conversation.uuid ? "flex" : "none",
         }}
-        onMouseOver={(e) => {
-          e.currentTarget.style.display = "flex";
-        }}
-        onMouseOut={(e) => {
-          e.currentTarget.style.display = "none";
-        }}
+        onClick={(e) => e.stopPropagation()}
       >
-        ...
+        <ActionDropdown
+          items={[
+            {
+              key: "delete",
+              label: "Delete",
+              danger: true,
+              onClick: () => {
+                handleDeleteConversation(conversation);
+              },
+            },
+          ]}
+        />
       </div>
     </div>
   );

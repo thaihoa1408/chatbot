@@ -17,7 +17,6 @@ const siderStyle: React.CSSProperties = {
   overflow: "auto",
   height: "100%",
   width: "236px",
-  transition: "all 0.3s ease",
 };
 
 export default function Sidebar({
@@ -46,7 +45,6 @@ export default function Sidebar({
         ...siderStyle,
         background: colorBgContainer,
         padding: collapsed ? 0 : "8px 16px",
-        width: collapsed ? 0 : "236px",
         ...style,
       }}
       className={className}
@@ -99,7 +97,7 @@ export default function Sidebar({
       <div
         style={{
           padding: "0.5rem 0",
-          height: "calc(100%-100px)",
+          height: "calc(100% - 80px)",
           overflow: "auto",
         }}
       >

@@ -82,6 +82,43 @@ export default function Chatbot() {
     dispatch({ field: "conversations", value: all });
   };
 
+  const handleDeleteConversation = (conversation: Conversation) => {
+    ////
+    const updatedConversations = conversations.filter(
+      (c) => c.uuid !== conversation.uuid
+    );
+
+    dispatch({ field: "conversations", value: updatedConversations });
+    saveConversations(updatedConversations);
+
+    if (updatedConversations.length > 0) {
+      dispatch({
+        field: "selectedConversation",
+        value: updatedConversations[0],
+      });
+
+      saveConversation(updatedConversations[0]);
+    } else {
+      const newConversation: Conversation = {
+        uuid: uuidv4(),
+        name: "New Conversation",
+        messages: [],
+        settings: {
+          model: "gemini-1.5-pro-latest",
+          prompt: "You are a friendly, helpful AI assistant.",
+          temperature: 0.5,
+        },
+        createdAt: new Date().toISOString(),
+      };
+
+      dispatch({ field: "selectedConversation", value: newConversation });
+      dispatch({ field: "conversations", value: [newConversation] });
+
+      saveConversation(newConversation);
+      saveConversations([newConversation]);
+    }
+  };
+
   useEffect(() => {
     const conversationHistory = localStorage.getItem("conversationHistory");
     if (conversationHistory) {
@@ -263,6 +300,7 @@ export default function Chatbot() {
           handleNewConversation,
           handleSelectConversation,
           handleUpdateConversation,
+          handleDeleteConversation,
           handleSend,
           stopConversationRef,
         }}
