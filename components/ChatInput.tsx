@@ -29,7 +29,7 @@ export default function ChatInput() {
     >
       <Flex vertical>
         <Input.TextArea
-          style={{ border: "none" }}
+          style={{ border: "none", fontSize: "14px" }}
           autoSize={{ minRows: 1, maxRows: 5 }}
           placeholder="Ask me anything!"
           value={value}
