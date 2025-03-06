@@ -119,7 +119,7 @@ export default function Sidebar({
                   {item.date}
                 </Typography.Text>
                 <Flex vertical>
-                  {item.conversations.map((conversation, index) => (
+                  {item.conversations.map((conversation) => (
                     <ConversationItem
                       key={conversation.uuid}
                       conversation={conversation}

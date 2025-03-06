@@ -1,13 +1,13 @@
 import { GoogleOutlined } from "@ant-design/icons";
 import { Avatar, Flex, theme, Typography } from "antd";
 import React from "react";
-import ReactMarkdown from "react-markdown";
-import rehypeMathjax from "rehype-mathjax";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { dracula } from "react-syntax-highlighter/dist/cjs/styles/prism";
+
 import type { ChatMessage } from "@/types";
+
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 interface AssistantChatMessageProps {
   message: ChatMessage;
@@ -52,38 +52,25 @@ export default function AssistantChatMessage({
           }}
         >
           <ReactMarkdown
-            remarkPlugins={[remarkGfm, remarkMath]}
-            rehypePlugins={[rehypeMathjax]}
+            rehypePlugins={[rehypeRaw]}
             components={{
-              code({
-                node,
-                inline,
-                className,
-                children,
-                ...props
-              }: {
-                node: any;
-                inline?: boolean;
-                className?: string;
-                children: React.ReactNode;
-              }) {
+              code({ node, className, children, ...props }) {
                 const match = /language-(\w+)/.exec(className || "");
-                return !inline && match ? (
+                return match ? (
                   <SyntaxHighlighter
-                    {...props}
-                    // eslint-disable-next-line react/no-children-prop
-                    children={String(children).replace(/\n$/, "")}
-                    style={dracula}
+                    style={oneDark as any}
                     language={match[1]}
                     PreTag="div"
-                  />
+                  >
+                    {String(children).trim()}
+                  </SyntaxHighlighter>
                 ) : (
-                  <code {...props} className={className}>
+                  <code className={className} {...props}>
                     {children}
                   </code>
                 );
               },
-              table({ children }: { children: React.ReactNode }) {
+              table(props) {
                 return (
                   <table
                     style={{
@@ -91,12 +78,11 @@ export default function AssistantChatMessage({
                       border: "1px solid black",
                       padding: "0.75rem",
                     }}
-                  >
-                    {children}
-                  </table>
+                    {...props}
+                  />
                 );
               },
-              th({ children }: { children: React.ReactNode }) {
+              th(props) {
                 return (
                   <th
                     style={{
@@ -106,12 +92,11 @@ export default function AssistantChatMessage({
                       padding: "0.75rem",
                       color: "white",
                     }}
-                  >
-                    {children}
-                  </th>
+                    {...props}
+                  />
                 );
               },
-              td({ children }: { children: React.ReactNode }) {
+              td(props) {
                 return (
                   <td
                     style={{
@@ -119,9 +104,8 @@ export default function AssistantChatMessage({
                       border: "1px solid black",
                       padding: "0.75rem",
                     }}
-                  >
-                    {children}
-                  </td>
+                    {...props}
+                  />
                 );
               },
             }}

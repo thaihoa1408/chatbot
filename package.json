@@ -19,9 +19,10 @@
     "next-with-less": "^3.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-markdown": "^8.0.7",
-    "react-syntax-highlighter": "^15.5.0",
+    "react-markdown": "^10.0.1",
+    "react-syntax-highlighter": "^15.6.1",
     "rehype-mathjax": "^6.0.0",
+    "rehype-raw": "^7.0.0",
     "remark-gfm": "^3.0.1",
     "remark-math": "^6.0.0",
     "uuid": "^11.1.0"

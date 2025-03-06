@@ -95,8 +95,8 @@ export default function ChatContainer() {
             {selectedConversation &&
             selectedConversation.messages.length > 0 ? (
               <>
-                {selectedConversation?.messages.map((item) => {
-                  return <ChatMessage message={item} />;
+                {selectedConversation?.messages.map((item, index) => {
+                  return <ChatMessage message={item} key={index} />;
                 })}
                 {loading && <ChatLoader />}
                 <div

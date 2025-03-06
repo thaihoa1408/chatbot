@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Layout, theme } from "antd";
+import { Layout } from "antd";
 import Sidebar from "./Sidebar";
 import { MenuUnfoldOutlined } from "@ant-design/icons";
 const { Content, Header } = Layout;
@@ -9,10 +9,6 @@ export default function ChatbotLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
-
   const [collapsed, setCollapsed] = useState(false);
 
   const handleToggleSidebar = () => {
