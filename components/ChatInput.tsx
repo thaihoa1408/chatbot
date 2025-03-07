@@ -29,8 +29,8 @@ export default function ChatInput() {
     >
       <Flex vertical>
         <Input.TextArea
-          style={{ border: "none", fontSize: "14px" }}
-          autoSize={{ minRows: 1, maxRows: 5 }}
+          style={{ border: "none", fontSize: "16px" }}
+          autoSize={{ minRows: 3, maxRows: 5 }}
           placeholder="Ask me anything!"
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -42,24 +42,15 @@ export default function ChatInput() {
           }}
         />
         <Card
-          // className="border-none"
+          style={{ border: "none" }}
           styles={{
             body: {
-              padding: 0,
+              padding: "8px 12px",
             },
           }}
-          style={{
-            borderTop: "none",
-            borderLeft: "none",
-            borderRight: "none",
-          }}
         >
-          <Flex
-            gap={12}
-            vertical={false}
-            justify="end"
-            style={{ padding: "0.75rem", cursor: "text" }}
-          >
+          <Flex justify="space-between" align="center" gap={12}>
+            <ModelSelection />
             <Button
               size="middle"
               type="primary"
@@ -69,16 +60,6 @@ export default function ChatInput() {
               onClick={handleSendMessage}
             />
           </Flex>
-        </Card>
-        <Card
-          style={{ border: "none" }}
-          styles={{
-            body: {
-              padding: 8,
-            },
-          }}
-        >
-          <ModelSelection />
         </Card>
       </Flex>
     </Card>

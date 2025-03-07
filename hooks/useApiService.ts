@@ -1,11 +1,13 @@
 import { useCallback } from "react";
 import { useFetch } from "./useFetch";
-
+import { getChatEndpoint } from "@/utils";
 const useApiService = () => {
   const fetchService = useFetch();
 
   const sendMessage = useCallback(
-    (endpoint: string, params: any, signal?: AbortSignal) => {
+    (params: any, signal?: AbortSignal) => {
+      const { chatSettings } = params;
+      const endpoint = getChatEndpoint(chatSettings.model);
       return fetchService.post<any>(
         endpoint,
         {

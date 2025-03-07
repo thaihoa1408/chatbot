@@ -9,6 +9,7 @@ import rehypeRaw from "rehype-raw";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useChatbotContext } from "@/context/ChatbotContext";
+import { FaRobot } from "react-icons/fa";
 
 interface AssistantChatMessageProps {
   message: ChatMessage;
@@ -39,7 +40,7 @@ export default function AssistantChatMessage({
           border: "none",
         }}
         size={32}
-        icon={<GoogleOutlined style={{ fontSize: "16px" }} />}
+        icon={<FaRobot style={{ fontSize: "16px" }} />}
       />
       <Flex
         vertical

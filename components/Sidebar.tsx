@@ -5,7 +5,8 @@ import type { Conversation } from "@/types";
 import { groupConversations } from "@/utils";
 import ConversationItem from "./ConversationItem";
 import { useChatbotContext } from "@/context/ChatbotContext";
-
+import { LuPanelLeftClose } from "react-icons/lu";
+import { FaRegPenToSquare } from "react-icons/fa6";
 interface SidebarProps {
   collapsed: boolean;
   onToggle: () => void;
@@ -81,15 +82,17 @@ export default function Sidebar({
             K.O Dev
           </Typography.Text>
         </Flex>
-        <Flex align="center" gap={8}>
-          <MenuFoldOutlined
+        <Flex align="center" gap={16}>
+          <LuPanelLeftClose
             onClick={onToggle}
-            style={{ cursor: "pointer", color: "white" }}
+            style={{
+              cursor: "pointer",
+              color: "white",
+              fontSize: "22px",
+            }}
           />
-          <Button
-            type="primary"
-            shape="circle"
-            icon={<EditOutlined style={{ fontSize: "16px" }} />}
+          <FaRegPenToSquare
+            style={{ fontSize: "20px", cursor: "pointer", color: "white" }}
             onClick={() => handleNewConversation()}
           />
         </Flex>

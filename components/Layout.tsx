@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Button, Flex, Layout } from "antd";
+import React, { useState } from "react";
+import { Flex, Layout } from "antd";
 import Sidebar from "./Sidebar";
-import { EditOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import styles from "./Layout.module.css";
 import { useChatbotContext } from "@/context/ChatbotContext";
+import { LuPanelLeftOpen } from "react-icons/lu";
+import { FaRegPenToSquare } from "react-icons/fa6";
 const { Content, Header } = Layout;
 
 export default function ChatbotLayout({
@@ -12,18 +13,7 @@ export default function ChatbotLayout({
   children: React.ReactNode;
 }) {
   const { handleNewConversation } = useChatbotContext();
-  const [collapsed, setCollapsed] = useState(false);
-
-  useEffect(() => {
-    setCollapsed(window.innerWidth < 768);
-
-    const handleResize = () => {
-      setCollapsed(window.innerWidth < 768);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const [collapsed, setCollapsed] = useState(true);
 
   const handleToggleSidebar = () => {
     setCollapsed(!collapsed);
@@ -57,12 +47,13 @@ export default function ChatbotLayout({
           }}
         >
           {collapsed && (
-            <Flex align="center" justify="center" gap={8}>
-              <MenuUnfoldOutlined onClick={handleToggleSidebar} />
-              <Button
-                type="primary"
-                shape="circle"
-                icon={<EditOutlined style={{ fontSize: "16px" }} />}
+            <Flex align="center" justify="center" gap={16}>
+              <LuPanelLeftOpen
+                onClick={handleToggleSidebar}
+                style={{ cursor: "pointer", color: "white", fontSize: "22px" }}
+              />
+              <FaRegPenToSquare
+                style={{ fontSize: "20px", cursor: "pointer", color: "white" }}
                 onClick={() => handleNewConversation()}
               />
             </Flex>

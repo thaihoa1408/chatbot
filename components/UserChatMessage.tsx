@@ -1,6 +1,7 @@
 import { Avatar, Flex, theme, Typography } from "antd";
 import React from "react";
 import type { ChatMessage } from "@/types";
+import { FaUser } from "react-icons/fa";
 
 interface UserChatMessageProps {
   message: ChatMessage;
@@ -52,9 +53,8 @@ export default function UserChatMessage({ message }: UserChatMessageProps) {
           fontSize: "0.875rem",
         }}
         size={32}
-      >
-        User
-      </Avatar>
+        icon={<FaUser style={{ fontSize: "16px" }} />}
+      />
     </Flex>
   );
 }
