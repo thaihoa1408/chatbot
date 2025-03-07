@@ -114,7 +114,9 @@ export default function ChatContainer() {
               </>
             ) : (
               <Flex align="center" justify="center" style={{ height: "100%" }}>
-                <Typography.Title>What can I help with?</Typography.Title>
+                <Typography.Title level={2}>
+                  What can I help with?
+                </Typography.Title>
               </Flex>
             )}
           </Flex>

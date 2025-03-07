@@ -1,4 +1,5 @@
-import { Conversation } from "@/types";
+import { LLM_LIST } from "@/constants";
+import { ChatMessage, Conversation, LLM } from "@/types";
 
 export const groupConversations = (conversations: Conversation[]) => {
   // Helper function to format date difference
@@ -67,7 +68,6 @@ export const updateConversation = (
 };
 
 export const saveConversation = (conversation: Conversation) => {
-  console.log(conversation);
   localStorage.setItem("selectedConversation", JSON.stringify(conversation));
 };
 
@@ -96,4 +96,44 @@ export function throttle<T extends (...args: any[]) => any>(
       }, limit - (Date.now() - lastRan));
     }
   }) as T;
+}
+
+export function formatMessageForProvider(
+  messages: ChatMessage[],
+  modelId: string
+) {
+  const provider = LLM_LIST.find(
+    (item: LLM) => item.modelId === modelId
+  )?.provider;
+  switch (provider) {
+    case "google":
+      return messages.map((message) => ({
+        role: message.role === "user" ? "user" : "model",
+        parts: [{ text: message.content }],
+      }));
+    case "openai":
+    case "groq":
+      return messages.map((message) => ({
+        role: message.role,
+        content: message.content,
+      }));
+    default:
+      throw new Error(`Unsupported provider: ${provider}`);
+  }
+}
+
+export function getChatEndpoint(modelId: string) {
+  const provider = LLM_LIST.find(
+    (item: LLM) => item.modelId === modelId
+  )?.provider;
+  switch (provider) {
+    case "google":
+      return "/api/chat/google";
+    case "openai":
+      return "/api/chat/openai";
+    case "groq":
+      return "/api/chat/groq";
+    default:
+      throw new Error(`Unsupported provider: ${provider}`);
+  }
 }

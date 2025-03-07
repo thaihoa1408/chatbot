@@ -11,6 +11,7 @@ import { useCreateReducer } from "@hooks/useCreateReducer";
 import React, { useCallback, useEffect, useRef } from "react";
 import { ChatMessage, Conversation } from "@/types";
 import {
+  formatMessageForProvider,
   saveConversation,
   saveConversations,
   updateConversation,
@@ -147,136 +148,140 @@ export default function Chatbot() {
 
   const handleSend = useCallback(
     async (message: ChatMessage, deleteCount = 0) => {
-      if (selectedConversation) {
-        let updatedConversation: Conversation;
-        if (deleteCount) {
-          const updatedMessages = [...selectedConversation.messages];
-          for (let i = 0; i < deleteCount; i++) {
-            updatedMessages.pop();
-          }
-          updatedConversation = {
-            ...selectedConversation,
-            messages: [...updatedMessages, message],
-          };
-        } else {
-          updatedConversation = {
-            ...selectedConversation,
-            messages: [...selectedConversation.messages, message],
-          };
-        }
-        dispatch({
-          field: "selectedConversation",
-          value: updatedConversation,
-        });
-        dispatch({ field: "loading", value: true });
-        dispatch({ field: "messageIsStreaming", value: true });
-        const chatBody = {
-          chatSettings: updatedConversation.settings,
-          messages: updatedConversation.messages.map((item) => {
-            return {
-              role: item.role === "user" ? "user" : "model",
-              parts: [{ text: item.content }],
-            };
-          }),
-        };
-
-        const controller = new AbortController();
-        const response = await apiService.sendMessage(
-          "/api/chat/google",
-          chatBody,
-          controller.signal
-        );
-        if (!response.ok) {
-          dispatch({ field: "loading", value: false });
-          dispatch({ field: "messageIsStreaming", value: false });
-          // toast.error(response.statusText);
-          return;
-        }
-        const data = response.body;
-        if (!data) {
-          dispatch({ field: "loading", value: false });
-          dispatch({ field: "messageIsStreaming", value: false });
-          return;
-        }
-        if (updatedConversation.messages.length === 1) {
-          const { content } = message;
-          if (typeof content === "string") {
-            const customName =
-              content.length > 30 ? content.substring(0, 30) + "..." : content;
-            updatedConversation = {
-              ...updatedConversation,
-              name: customName,
-            };
-          }
-        }
-        dispatch({ field: "loading", value: false });
-        const reader = data.getReader();
-        const decoder = new TextDecoder();
-        let done = false;
-        let isFirst = true;
-        let text = "";
-        while (!done) {
-          if (stopConversationRef.current === true) {
-            controller.abort();
-            done = true;
-            break;
-          }
-          const { value, done: doneReading } = await reader.read();
-          done = doneReading;
-          const chunkValue = decoder.decode(value);
-          text += chunkValue;
-          if (isFirst) {
-            isFirst = false;
-            const updatedMessages: ChatMessage[] = [
-              ...updatedConversation.messages,
-              { role: "assistant", content: chunkValue },
-            ];
-            updatedConversation = {
-              ...updatedConversation,
-              messages: updatedMessages,
-            };
-            dispatch({
-              field: "selectedConversation",
-              value: updatedConversation,
-            });
-          } else {
-            const updatedMessages: ChatMessage[] =
-              updatedConversation.messages.map((message, index) => {
-                if (index === updatedConversation.messages.length - 1) {
-                  return {
-                    ...message,
-                    content: text,
-                  };
-                }
-                return message;
-              });
-            updatedConversation = {
-              ...updatedConversation,
-              messages: updatedMessages,
-            };
-            dispatch({
-              field: "selectedConversation",
-              value: updatedConversation,
-            });
-          }
-        }
-        saveConversation(updatedConversation);
-        const updatedConversations: Conversation[] = conversations.map(
-          (conversation) => {
-            if (conversation.uuid === selectedConversation.uuid) {
-              return updatedConversation;
+      try {
+        if (selectedConversation) {
+          let updatedConversation: Conversation;
+          if (deleteCount) {
+            const updatedMessages = [...selectedConversation.messages];
+            for (let i = 0; i < deleteCount; i++) {
+              updatedMessages.pop();
             }
-            return conversation;
+            updatedConversation = {
+              ...selectedConversation,
+              messages: [...updatedMessages, message],
+            };
+          } else {
+            updatedConversation = {
+              ...selectedConversation,
+              messages: [...selectedConversation.messages, message],
+            };
           }
-        );
-        if (updatedConversations.length === 0) {
-          updatedConversations.push(updatedConversation);
+          dispatch({
+            field: "selectedConversation",
+            value: updatedConversation,
+          });
+          dispatch({ field: "loading", value: true });
+          dispatch({ field: "messageIsStreaming", value: true });
+          const chatBody = {
+            chatSettings: updatedConversation.settings,
+            messages: formatMessageForProvider(
+              updatedConversation.messages,
+              updatedConversation.settings.model
+            ),
+          };
+
+          const controller = new AbortController();
+          const response = await apiService.sendMessage(
+            chatBody,
+            controller.signal
+          );
+          if (!response.ok) {
+            dispatch({ field: "loading", value: false });
+            dispatch({ field: "messageIsStreaming", value: false });
+            // toast.error(response.statusText);
+            return;
+          }
+          const data = response.body;
+          if (!data) {
+            dispatch({ field: "loading", value: false });
+            dispatch({ field: "messageIsStreaming", value: false });
+            return;
+          }
+          if (updatedConversation.messages.length === 1) {
+            const { content } = message;
+            if (typeof content === "string") {
+              const customName =
+                content.length > 30
+                  ? content.substring(0, 30) + "..."
+                  : content;
+              updatedConversation = {
+                ...updatedConversation,
+                name: customName,
+              };
+            }
+          }
+          dispatch({ field: "loading", value: false });
+          const reader = data.getReader();
+          const decoder = new TextDecoder();
+          let done = false;
+          let isFirst = true;
+          let text = "";
+          while (!done) {
+            if (stopConversationRef.current === true) {
+              controller.abort();
+              done = true;
+              break;
+            }
+            const { value, done: doneReading } = await reader.read();
+            done = doneReading;
+            const chunkValue = decoder.decode(value);
+            text += chunkValue;
+            if (isFirst) {
+              isFirst = false;
+              const updatedMessages: ChatMessage[] = [
+                ...updatedConversation.messages,
+                { role: "assistant", content: chunkValue },
+              ];
+              updatedConversation = {
+                ...updatedConversation,
+                messages: updatedMessages,
+              };
+              dispatch({
+                field: "selectedConversation",
+                value: updatedConversation,
+              });
+            } else {
+              const updatedMessages: ChatMessage[] =
+                updatedConversation.messages.map((message, index) => {
+                  if (index === updatedConversation.messages.length - 1) {
+                    return {
+                      ...message,
+                      content: text,
+                    };
+                  }
+                  return message;
+                });
+              updatedConversation = {
+                ...updatedConversation,
+                messages: updatedMessages,
+              };
+              dispatch({
+                field: "selectedConversation",
+                value: updatedConversation,
+              });
+            }
+          }
+          saveConversation(updatedConversation);
+          const updatedConversations: Conversation[] = conversations.map(
+            (conversation) => {
+              if (conversation.uuid === selectedConversation.uuid) {
+                return updatedConversation;
+              }
+              return conversation;
+            }
+          );
+          if (updatedConversations.length === 0) {
+            updatedConversations.push(updatedConversation);
+          }
+          dispatch({
+            field: "conversations",
+            value: updatedConversations,
+          });
+          saveConversations(updatedConversations);
+          dispatch({ field: "messageIsStreaming", value: false });
         }
-        dispatch({
-          field: "conversations",
-          value: updatedConversations,
-        });
-        saveConversations(updatedConversations);
+      } catch (error) {
+        dispatch({ field: "loading", value: false });
         dispatch({ field: "messageIsStreaming", value: false });
       }
     },
