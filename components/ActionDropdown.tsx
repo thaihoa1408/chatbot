@@ -1,4 +1,4 @@
-import { Dropdown, MenuProps } from "antd";
+import { Button, Dropdown, MenuProps } from "antd";
 import React from "react";
 import { EllipsisOutlined } from "@ant-design/icons";
 
@@ -9,12 +9,20 @@ interface ActionDropdownProps {
 function ActionDropdown({ items }: ActionDropdownProps) {
   return (
     <Dropdown menu={{ items }} trigger={["click"]} placement="bottomRight">
-      <EllipsisOutlined
+      <Button
+        type="text"
+        size="small"
         style={{
-          fontSize: "20px",
-          color: "white",
+          padding: "0 2px",
         }}
-      />
+      >
+        <EllipsisOutlined
+          style={{
+            fontSize: "22px",
+            color: "white",
+          }}
+        />
+      </Button>
     </Dropdown>
   );
 }

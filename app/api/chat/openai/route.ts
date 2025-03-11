@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 
   try {
     const openai = new OpenAI({
-      apiKey: "not_have",
+      apiKey: process.env.OPENAI_API_KEY || "",
     });
 
     const response = await openai.chat.completions.create({

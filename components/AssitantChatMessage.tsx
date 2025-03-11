@@ -1,4 +1,3 @@
-import { GoogleOutlined } from "@ant-design/icons";
 import { Avatar, Flex, theme, Typography } from "antd";
 import React from "react";
 

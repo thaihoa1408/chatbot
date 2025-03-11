@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   try {
     // Groq is compatible with the OpenAI SDK
     const groq = new OpenAI({
-      apiKey: "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",
+      apiKey: process.env.GROQ_API_KEY || "",
       baseURL: "https://api.groq.com/openai/v1",
     });
 

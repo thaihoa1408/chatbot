@@ -45,9 +45,10 @@ export default function ChatbotLayout({
             display: "flex",
             alignItems: "center",
           }}
+          className={styles.header}
         >
           {collapsed && (
-            <Flex align="center" justify="center" gap={16}>
+            <Flex align="center" gap={16} className={styles.iconContainer}>
               <LuPanelLeftOpen
                 onClick={handleToggleSidebar}
                 style={{ cursor: "pointer", color: "white", fontSize: "22px" }}
