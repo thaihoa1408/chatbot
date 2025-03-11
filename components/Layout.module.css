@@ -6,8 +6,19 @@
   position: relative;
 }
 
+.header {
+  .iconContainer {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
 @media (max-width: 768px) {
   .sidebar {
     position: absolute !important;
+  }
+  .header {
+    .iconContainer {
+      justify-content: space-between !important;
+    }
   }
 }

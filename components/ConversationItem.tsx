@@ -3,12 +3,15 @@ import { Conversation } from "@/types";
 import { useChatbotContext } from "@context/ChatbotContext";
 import { Typography } from "antd";
 import ActionDropdown from "./ActionDropdown";
+
 interface ConversationItemProps {
   conversation: Conversation;
+  onCollapse?: () => void;
 }
 
 export default function ConversationItem({
   conversation,
+  onCollapse,
 }: ConversationItemProps) {
   const {
     state: { selectedConversation },
@@ -18,23 +21,32 @@ export default function ConversationItem({
 
   const isSelected = selectedConversation?.uuid === conversation.uuid;
 
+  const handleClick = () => {
+    handleSelectConversation(conversation);
+    if (window.innerWidth <= 768) {
+      onCollapse?.();
+    }
+  };
+
   return (
     <div
       style={{
         borderRadius: "0.5rem",
         height: "2.25rem",
         fontSize: "0.875rem",
-        position: "relative",
+        // position: "relative",
         cursor: "pointer",
         marginBottom: "0.2rem",
       }}
-      onClick={() => handleSelectConversation(conversation)}
+      onClick={handleClick}
     >
       <div
         style={{
           padding: "0.5rem",
           borderRadius: "0.5rem",
           backgroundColor: isSelected ? "#32436c" : undefined,
+          display: "flex",
+          alignItems: "center",
         }}
         onMouseOver={(e) => {
           e.currentTarget.style.backgroundColor = "#32436c";
@@ -55,33 +67,28 @@ export default function ConversationItem({
         >
           {conversation.name}
         </Typography.Text>
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          bottom: 0,
-          top: 0,
-          alignItems: "center",
-          gap: "0.375rem",
-          paddingRight: "0.5rem",
-          right: 0,
-          display:
-            selectedConversation?.uuid === conversation.uuid ? "flex" : "none",
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <ActionDropdown
-          items={[
-            {
-              key: "delete",
-              label: "Delete",
-              danger: true,
-              onClick: () => {
-                handleDeleteConversation(conversation);
+        <div
+          style={{
+            display:
+              selectedConversation?.uuid === conversation.uuid
+                ? "flex"
+                : "none",
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <ActionDropdown
+            items={[
+              {
+                key: "delete",
+                label: "Delete",
+                danger: true,
+                onClick: () => {
+                  handleDeleteConversation(conversation);
+                },
               },
-            },
-          ]}
-        />
+            ]}
+          />
+        </div>
       </div>
     </div>
   );

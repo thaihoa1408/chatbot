@@ -1,6 +1,5 @@
 import React from "react";
-import { MenuFoldOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, Flex, Layout, Typography, theme } from "antd";
+import { Flex, Layout, Typography, theme } from "antd";
 import type { Conversation } from "@/types";
 import { groupConversations } from "@/utils";
 import ConversationItem from "./ConversationItem";
@@ -124,6 +123,7 @@ export default function Sidebar({
                     <ConversationItem
                       key={conversation.uuid}
                       conversation={conversation}
+                      onCollapse={onToggle}
                     />
                   ))}
                 </Flex>
