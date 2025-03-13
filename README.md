@@ -2,6 +2,10 @@
 
 A modern AI chatbot application built with Next.js that supports multiple language models including Google Gemini, OpenAI GPT, and Groq.
 
+![K.O Dev Chatbot Preview](public/preview.png)
+
+🔗 [Live Demo](https://ko-dev-chatbot.vercel.app)
+
 ## Features
 
 - 🤖 Multiple AI Model Support
