@@ -4,7 +4,7 @@ A modern AI chatbot application built with Next.js that supports multiple langua
 
 ![K.O Dev Chatbot Preview](public/preview.png)
 
-🔗 [Live Demo](https://ko-dev-chatbot.vercel.app)
+🔗 [Live Demo](https://kodev-chatbot.vercel.app)
 
 ## Features
 
